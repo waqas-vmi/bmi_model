@@ -36,6 +36,16 @@ def to_silhouette_mediapipe(pil_image):
     silhouette_img = cv2.merge([silhouette, silhouette, silhouette])
     return Image.fromarray(silhouette_img).convert("L")
 
+def classify_bmi(bmi):
+    if bmi < 18.5:
+        return "Underweight"
+    elif 18.5 <= bmi < 25:
+        return "Normal Weight"
+    elif 25 <= bmi < 30:
+        return "Overweight"
+    else:
+        return "Obese"
+
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -70,6 +80,7 @@ def index():
 
         pred_bmi, front_sil, side_sil = predict_bmi(Image.open(front_path), Image.open(side_path))
         bmi = pred_bmi
+        classified_bmi = classify_bmi(pred_bmi)
 
         # Save silhouette previews
         front_sil_path = os.path.join(SIL_FOLDER, "front_sil.png")
@@ -77,7 +88,7 @@ def index():
         front_sil.save(front_sil_path)
         side_sil.save(side_sil_path)
 
-    return render_template("index.html", bmi=bmi, front_sil=front_sil_path, side_sil=side_sil_path)
+    return render_template("index.html", bmi=bmi, classified_bmi=classified_bmi,front_sil=front_sil_path, side_sil=side_sil_path)
 
 if __name__ == "__main__":
     app.run(debug=True)
