@@ -67,6 +67,7 @@ def predict_bmi(front_img, side_img):
 @app.route("/", methods=["GET", "POST"])
 def index():
     bmi = None
+    classified_bmi = None
     front_sil_path = side_sil_path = None
 
     if request.method == "POST":
